@@ -1,0 +1,37 @@
+[
+  {
+    "model": "claude-3-5-sonnet-latest",
+    "context_window": 200000,
+    "max_output_tokens": 8192,
+    "capabilities": ["completion", "tools", "vision"],
+    "family": "claude-3.5"
+  },
+  {
+    "model": "claude-3-5-sonnet-20241022",
+    "context_window": 200000,
+    "max_output_tokens": 8192,
+    "capabilities": ["completion", "tools", "vision"],
+    "family": "claude-3.5"
+  },
+  {
+    "model": "claude-3-5-haiku-latest",
+    "context_window": 200000,
+    "max_output_tokens": 8192,
+    "capabilities": ["completion", "tools", "vision"],
+    "family": "claude-3.5"
+  },
+  {
+    "model": "claude-3-opus-latest",
+    "context_window": 200000,
+    "max_output_tokens": 4096,
+    "capabilities": ["completion", "tools", "vision"],
+    "family": "claude-3"
+  },
+  {
+    "model": "claude-3-haiku-20240307",
+    "context_window": 200000,
+    "max_output_tokens": 4096,
+    "capabilities": ["completion", "tools", "vision"],
+    "family": "claude-3"
+  }
+]

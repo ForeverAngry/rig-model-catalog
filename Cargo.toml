@@ -1,0 +1,89 @@
+[package]
+name = "rig-model-meta"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+description = "Provider-agnostic model metadata (context window, capabilities, quantization) and probe traits for Rig agents."
+repository = "https://github.com/ForeverAngry/rig-model-meta"
+authors = ["ForeverAngry"]
+keywords = ["rig", "llm", "model", "context-window", "telemetry"]
+categories = ["api-bindings", "asynchronous"]
+
+[dependencies]
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+thiserror = "2.0.12"
+tracing = "0.1.41"
+parking_lot = "0.12.5"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"], optional = true }
+rig-core = { version = "0.37", default-features = false, optional = true }
+
+[dev-dependencies]
+anyhow = "1.0.102"
+tokio = { version = "1.51.1", features = ["macros", "rt-multi-thread"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[features]
+# v0.1.0 ships an opt-in surface only. The default build pulls just the
+# trait + types + `StubProbe`, so consumers that hand-roll their own
+# probe pay nothing.
+default = []
+
+# `OllamaProbe` — POST /api/show to discover context window, capabilities,
+# quantization, parameter count, and architecture family for any model
+# served by an Ollama daemon. Pulls `reqwest` (rustls).
+ollama = ["dep:reqwest"]
+
+# `StaticProbe` — in-memory catalog backed by curated tables for
+# providers without a metadata endpoint (OpenAI, Anthropic). Bundled JSON
+# is `include_str!`'d, so this feature pulls no extra runtime deps.
+static = []
+
+# `MetaHook` — implements `rig_core::PromptHook`, attaching model
+# descriptor data (context window, capabilities) and per-turn token usage
+# to `tracing` events under the `gen_ai.*` field convention. Pulls
+# `rig-core` (default-features disabled).
+rig-hook = ["dep:rig-core"]
+
+# `PricingTable` + `ModelPrice` — USD-per-million-token rates keyed by
+# `(provider, model)`, plus a curated `data/pricing.json` snapshot of
+# OpenAI and Anthropic pricing baked in via `include_str!`. Pulls no
+# extra runtime deps. When combined with `rig-hook`, exposes the
+# `ModelPrice::cost_for_usage(&rig_core::completion::Usage)` bridge.
+pricing = []
+
+[lints.clippy]
+dbg_macro = "forbid"
+await_holding_lock = "deny"
+await_holding_refcell_ref = "deny"
+expect_used = "deny"
+expect_fun_call = "deny"
+indexing_slicing = "deny"
+panic = "deny"
+panic_in_result_fn = "deny"
+todo = "forbid"
+unimplemented = "forbid"
+unreachable = "deny"
+unwrap_used = "deny"
+
+[profile.release]
+lto = true
+opt-level = "s"
+
+[[example]]
+name = "probe_ollama"
+required-features = ["ollama"]
+
+[[example]]
+name = "chained"
+required-features = ["static"]
+
+[[test]]
+name = "static_catalog"
+required-features = ["static"]
+
+[[test]]
+name = "pricing"
+required-features = ["pricing"]

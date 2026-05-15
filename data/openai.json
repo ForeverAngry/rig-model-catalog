@@ -1,0 +1,56 @@
+[
+  {
+    "model": "gpt-4o",
+    "context_window": 128000,
+    "max_output_tokens": 16384,
+    "capabilities": ["completion", "tools", "vision", "structured_output"],
+    "family": "gpt-4"
+  },
+  {
+    "model": "gpt-4o-mini",
+    "context_window": 128000,
+    "max_output_tokens": 16384,
+    "capabilities": ["completion", "tools", "vision", "structured_output"],
+    "family": "gpt-4"
+  },
+  {
+    "model": "gpt-4-turbo",
+    "context_window": 128000,
+    "max_output_tokens": 4096,
+    "capabilities": ["completion", "tools", "vision"],
+    "family": "gpt-4"
+  },
+  {
+    "model": "gpt-3.5-turbo",
+    "context_window": 16385,
+    "max_output_tokens": 4096,
+    "capabilities": ["completion", "tools"],
+    "family": "gpt-3.5"
+  },
+  {
+    "model": "o1",
+    "context_window": 200000,
+    "max_output_tokens": 100000,
+    "capabilities": ["completion", "thinking", "vision"],
+    "family": "o-series"
+  },
+  {
+    "model": "o1-mini",
+    "context_window": 128000,
+    "max_output_tokens": 65536,
+    "capabilities": ["completion", "thinking"],
+    "family": "o-series"
+  },
+  {
+    "model": "text-embedding-3-small",
+    "context_window": 8191,
+    "capabilities": ["embedding"],
+    "family": "text-embedding-3"
+  },
+  {
+    "model": "text-embedding-3-large",
+    "context_window": 8191,
+    "capabilities": ["embedding"],
+    "family": "text-embedding-3"
+  }
+]
