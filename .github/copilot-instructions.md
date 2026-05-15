@@ -34,9 +34,14 @@ just check
 - `ollama`: pulls `reqwest`. Adds `OllamaProbe`.
 - `static`: zero extra runtime deps. Adds `StaticProbe` backed by
   `data/openai.json` + `data/anthropic.json`.
+- `rig-hook`: pulls `rig-core` with default features disabled. Adds `MetaHook`
+  prompt-hook telemetry.
+- `pricing`: zero extra runtime deps. Adds `PricingTable` / `ModelPrice` backed
+  by `data/pricing.json`.
 
 ## Scope
 
-Do not depend on `rig-core`, `rig-compose`, `rig-memvid`, `rig-resources`,
-`rig-mcp`, `rig-veh`, or `rig-evals-rag`. This crate must be consumable
-by all of them.
+Do not depend on `rig-compose`, `rig-memvid`, `rig-resources`, `rig-mcp`,
+`rig-veh`, or `rig-evals-rag`. Keep the optional `rig-core` dependency confined
+to the `rig-hook` feature with default features disabled so this crate remains
+consumable by all of them.
