@@ -47,6 +47,11 @@ static = []
 # `rig-core` (default-features disabled).
 rig-hook = ["dep:rig-core"]
 
+# Re-emit `MetaHook` prompt lifecycle observations on the `rig_observe`
+# tracing target using the shared JSON wire shape. Depends on `rig-hook`
+# but does not depend on `rig-observe`, preserving crate direction.
+observe = ["rig-hook"]
+
 # `PricingTable` + `ModelPrice` — USD-per-million-token rates keyed by
 # `(provider, model)`, plus a curated `data/pricing.json` snapshot of
 # OpenAI and Anthropic pricing baked in via `include_str!`. Pulls no

@@ -43,9 +43,11 @@ Rig ecosystem. Public primitives:
 
 Default = none. Optional: `ollama` (pulls `reqwest`), `static` (bundled
 JSON via `include_str!`), `rig-hook` (pulls `rig-core` for `PromptHook`
-telemetry), and `pricing` (bundled pricing catalog). Gate optional code with
-`#[cfg(feature = "...")]`. CI matrix covers default, individual feature
-combos, combined provider/catalog features, and all-features.
+telemetry), `observe` (extends `rig-hook` to emit the `rig_observe` JSON
+wire shape without depending on `rig-observe`), and `pricing` (bundled
+pricing catalog). Gate optional code with `#[cfg(feature = "...")]`. CI
+matrix covers default, individual feature combos, combined provider/catalog
+features, and all-features.
 
 ## Validation
 

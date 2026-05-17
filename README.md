@@ -51,6 +51,7 @@ if let Some(desc) = probe.describe("gpt-4o").await? {
 | `ollama`  | `reqwest`      | `OllamaProbe::live(...)` against `POST /api/show` |
 | `static`  | —              | `StaticProbe::builtin()` with bundled OpenAI + Anthropic tables |
 | `rig-hook`| `rig-core`     | `MetaHook` + `HookPair` (PromptHook telemetry composition) |
+| `observe` | `rig-hook`     | Re-emits `MetaHook` prompt lifecycle events on the `rig_observe` target |
 | `pricing` | —              | `PricingTable` + `ModelPrice` with bundled OpenAI + Anthropic USD/M rates |
 
 ## Design rules
@@ -69,13 +70,18 @@ if let Some(desc) = probe.describe("gpt-4o").await? {
 
 ## Roadmap
 
-- Knowledge-cutoff + deprecation fields (additive, data files).
-- `PromptHook` adapter that emits Rig `Usage` + context-window utilization
-  events.
-- BedRock and llama.cpp probes.
-- CLI: `rig-model-meta show <provider>:<model>`.
+Released in `v0.1.0`. Unreleased on `main` and exercised in the CI matrix:
+`MetaHook` + `HookPair` (`rig-hook` feature), `MetaHook` `rig_observe`
+emission (`observe` feature), `PricingTable` + `ModelPrice` (`pricing` feature),
+`RuntimeDescriptor` / `OllamaProbe::runtime`,
+`ModelMetaProbeDyn` + `DynProbe`, and a TTL `Cache<P>` memoiser. See
+[`CHANGELOG.md`](CHANGELOG.md) for the full list.
 
-See [`CHANGELOG.md`](CHANGELOG.md) for release notes.
+Still planned:
+
+- Knowledge-cutoff + deprecation fields (additive, data files).
+- Bedrock and llama.cpp probes.
+- CLI: `rig-model-meta show <provider>:<model>`.
 
 ## License
 
