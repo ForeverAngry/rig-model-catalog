@@ -47,9 +47,9 @@ static = []
 # `rig-core` (default-features disabled).
 rig-hook = ["dep:rig-core"]
 
-# Re-emit `MetaHook` prompt lifecycle observations on the `rig_observe`
+# Re-emit `MetaHook` prompt lifecycle observations on the `rig_tap`
 # tracing target using the shared JSON wire shape. Depends on `rig-hook`
-# but does not depend on `rig-observe`, preserving crate direction.
+# but does not depend on `rig-tap`, preserving crate direction.
 observe = ["rig-hook"]
 
 # `PricingTable` + `ModelPrice` — USD-per-million-token rates keyed by

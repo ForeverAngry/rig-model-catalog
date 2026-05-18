@@ -36,8 +36,8 @@ just check
   `data/openai.json` + `data/anthropic.json`.
 - `rig-hook`: pulls `rig-core` with default features disabled. Adds `MetaHook`
   prompt-hook telemetry.
-- `observe`: extends `rig-hook` to emit the `rig_observe` JSON wire shape
-  without depending on `rig-observe`.
+- `observe`: extends `rig-hook` to emit the `rig_tap` JSON wire shape
+  without depending on `rig-tap`.
 - `pricing`: zero extra runtime deps. Adds `PricingTable` / `ModelPrice` backed
   by `data/pricing.json`.
 

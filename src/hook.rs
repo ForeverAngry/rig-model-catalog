@@ -109,7 +109,7 @@ impl MetaHook {
         }
     }
 
-    /// Set the `conversation_id` stamped on `rig_observe` prompt events
+    /// Set the `conversation_id` stamped on `rig_tap` prompt events
     /// emitted when the `observe` feature is enabled.
     ///
     /// The underlying Rig `PromptHook` does not carry request context, so the
@@ -122,7 +122,7 @@ impl MetaHook {
         self
     }
 
-    /// Borrow the `conversation_id` stamped on `rig_observe` prompt events
+    /// Borrow the `conversation_id` stamped on `rig_tap` prompt events
     /// when the `observe` feature is enabled.
     #[cfg(feature = "observe")]
     pub fn observe_conversation_id(&self) -> &str {
@@ -268,7 +268,7 @@ fn observe_envelope(
 #[cfg(feature = "observe")]
 fn emit_observe_event(event: serde_json::Map<String, serde_json::Value>) {
     if let Ok(json) = serde_json::to_string(&event) {
-        tracing::info!(target: "rig_observe", event = %json);
+        tracing::info!(target: "rig_tap", event = %json);
     }
 }
 
@@ -339,7 +339,7 @@ mod tests {
 
     #[cfg(feature = "observe")]
     #[test]
-    fn observe_envelope_matches_rig_observe_shape() {
+    fn observe_envelope_matches_rig_tap_shape() {
         let event = observe_envelope("thread-1", "prompt.started");
         assert_eq!(event.get("version").unwrap(), &serde_json::json!(1));
         assert_eq!(

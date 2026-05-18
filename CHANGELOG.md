@@ -48,9 +48,9 @@ this crate adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   probe call up-front) or lazily with `MetaHook::unresolved`. Observation
   only — always returns `HookAction::cont()`.
 - `observe` feature — extends `MetaHook` to re-emit prompt lifecycle
-  observations on the `rig_observe` tracing target using the shared JSON
+  observations on the `rig_tap` tracing target using the shared JSON
   wire shape (`prompt.started` / `prompt.completed`). The feature depends
-  on `rig-hook` but intentionally does not depend on `rig-observe`, keeping
+  on `rig-hook` but intentionally does not depend on `rig-tap`, keeping
   this crate consumable by all companion crates.
 - `HookPair<A, B>` (feature `rig-hook`) — sequentially compose two
   `PromptHook`s into a single one (`first` runs before `second`, with

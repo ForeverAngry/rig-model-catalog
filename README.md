@@ -84,7 +84,7 @@ before users see reasoning tags.
 | `ollama`  | `reqwest`      | `OllamaProbe::live(...)` against `POST /api/show` |
 | `static`  | —              | `StaticProbe::builtin()` with bundled OpenAI + Anthropic tables |
 | `rig-hook`| `rig-core`     | `MetaHook` + `HookPair` (PromptHook telemetry composition) |
-| `observe` | `rig-hook`     | Re-emits `MetaHook` prompt lifecycle events on the `rig_observe` target |
+| `observe` | `rig-hook`     | Re-emits `MetaHook` prompt lifecycle events on the `rig_tap` target |
 | `pricing` | —              | `PricingTable` + `ModelPrice` with bundled OpenAI + Anthropic USD/M rates |
 
 ## Design rules
@@ -104,7 +104,7 @@ before users see reasoning tags.
 ## Roadmap
 
 Released in `v0.1.0`. Unreleased on `main` and exercised in the CI matrix:
-`MetaHook` + `HookPair` (`rig-hook` feature), `MetaHook` `rig_observe`
+`MetaHook` + `HookPair` (`rig-hook` feature), `MetaHook` `rig_tap`
 emission (`observe` feature), `PricingTable` + `ModelPrice` (`pricing` feature),
 `RuntimeDescriptor` / `OllamaProbe::runtime`,
 `ModelMetaProbeDyn` + `DynProbe`, and a TTL `Cache<P>` memoiser. See
