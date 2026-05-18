@@ -28,10 +28,14 @@ clippy:
     cargo clippy --all-targets --no-default-features --features static -- -D warnings
     cargo clippy --all-targets --no-default-features --features rig-hook -- -D warnings
     cargo clippy --all-targets --no-default-features --features pricing -- -D warnings
+    cargo clippy --all-targets --no-default-features --features observe -- -D warnings
+    cargo clippy --all-targets --no-default-features --features "static,pricing" -- -D warnings
+    cargo clippy --all-targets --no-default-features --features "rig-hook,observe" -- -D warnings
 
 # Tests across CI feature combos.
 test:
     cargo test --all-features
+    cargo test --no-default-features --features "static,pricing"
 
 # MSRV gate (Rust 1.89).
 msrv:
