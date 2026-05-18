@@ -43,6 +43,39 @@ if let Some(desc) = probe.describe("gpt-4o").await? {
 # Ok(()) }
 ```
 
+## Thinking-capable models
+
+`Capability::Thinking` means the model advertises a native reasoning channel.
+For Ollama models used through Rig, callers should opt into that native
+separation with `think: true` and still assert that user-visible output is free
+of raw `<think>` / `</think>` tags.
+
+```rust,no_run
+use rig_model_meta::{Capability, ModelMetaProbe, OllamaProbe};
+
+let base_url = "http://localhost:11434";
+let model_name = "qwen3.5:9b";
+let model = ollama_client.completion_model(model_name);
+
+let probe = OllamaProbe::live(base_url);
+let descriptor = probe.describe(model_name).await?;
+let supports_thinking = descriptor
+  .as_ref()
+  .is_some_and(|d| d.capabilities.contains(&Capability::Thinking));
+
+let mut builder = rig::agent::AgentBuilder::new(model);
+if supports_thinking {
+  builder = builder.additional_params(serde_json::json!({ "think": true }));
+}
+let agent = builder.build();
+```
+
+The capability is not a sanitizer. It tells the host which provider contract to
+activate. Applications that render model output directly should keep a live
+smoke check equivalent to `!output.contains("<think>") &&
+!output.contains("</think>")` so provider or model regressions are caught
+before users see reasoning tags.
+
 ## Features
 
 | Feature   | Pulls          | What you get                                      |

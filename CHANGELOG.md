@@ -7,6 +7,13 @@ this crate adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+### Documentation
+
+- Document the `Capability::Thinking` host contract for Rig/Ollama users:
+  probe the model, set `additional_params({ "think": true })` when the
+  capability is present, and keep a live assertion that user-visible output
+  does not contain raw `<think>` / `</think>` tags.
+
 ### Added
 
 - `RuntimeDescriptor` + `OllamaProbe::runtime(model)` — `GET /api/ps`
