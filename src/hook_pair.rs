@@ -22,7 +22,7 @@
 //!
 //! // Pair an ambient telemetry hook with whatever behavioural hook you
 //! // already had attached.
-//! # let telemetry = MetaHook::unresolved("ollama", "llama3.2:3b");
+//! # let telemetry = MetaHook::unresolved("ollama", "qwen3.5:9b");
 //! # let persist = (); // any other `PromptHook` impl
 //! let combined = HookPair::new(telemetry, persist);
 //! // `combined` itself implements `PromptHook<M>` and can be passed to

@@ -20,7 +20,7 @@
 //! use rig_model_meta::{MetaHook, OllamaProbe};
 //!
 //! let probe = OllamaProbe::live("http://localhost:11434");
-//! let hook = MetaHook::resolve(&probe, "ollama", "llama3.2:3b").await?;
+//! let hook = MetaHook::resolve(&probe, "ollama", "qwen3.5:9b").await?;
 //! // `hook` now implements `rig_core::agent::PromptHook<M>` for any
 //! // `CompletionModel M`. Pass it to `agent.prompt(...).with_hook(hook)`.
 //! # let _ = hook;
@@ -292,19 +292,19 @@ mod tests {
     use crate::{ModelDescriptor, StubProbe};
 
     fn descriptor() -> ModelDescriptor {
-        ModelDescriptor::builder("ollama", "llama3.2:3b")
+        ModelDescriptor::builder("ollama", "qwen3.5:9b")
             .context_window(131_072)
             .build()
     }
 
     #[tokio::test]
     async fn resolve_caches_descriptor_from_probe() {
-        let probe = StubProbe::new([("llama3.2:3b", descriptor())]);
-        let hook = MetaHook::resolve(&probe, "ollama", "llama3.2:3b")
+        let probe = StubProbe::new([("qwen3.5:9b", descriptor())]);
+        let hook = MetaHook::resolve(&probe, "ollama", "qwen3.5:9b")
             .await
             .unwrap();
         assert_eq!(hook.provider().as_str(), "ollama");
-        assert_eq!(hook.model(), "llama3.2:3b");
+        assert_eq!(hook.model(), "qwen3.5:9b");
         assert_eq!(hook.descriptor().unwrap().context_window, Some(131_072));
     }
 
@@ -319,7 +319,7 @@ mod tests {
 
     #[test]
     fn context_used_pct_computes_against_window() {
-        let hook = MetaHook::from_descriptor("ollama", "llama3.2:3b", Some(descriptor()));
+        let hook = MetaHook::from_descriptor("ollama", "qwen3.5:9b", Some(descriptor()));
         let pct = hook.context_used_pct(65_536).unwrap();
         assert!((pct - 50.0).abs() < 1e-9);
     }
@@ -358,7 +358,7 @@ mod tests {
     #[test]
     fn observe_conversation_id_is_configurable() {
         let hook =
-            MetaHook::unresolved("ollama", "llama3.2:3b").with_observe_conversation_id("thread-42");
+            MetaHook::unresolved("ollama", "qwen3.5:9b").with_observe_conversation_id("thread-42");
         assert_eq!(hook.observe_conversation_id(), "thread-42");
     }
 }

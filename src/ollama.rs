@@ -349,19 +349,19 @@ mod tests {
         let body = serde_json::json!({
             "capabilities": ["completion", "tools", "vision"],
             "details": {
-                "family": "llama",
+                "family": "qwen",
                 "parameter_size": "7.2B",
                 "quantization_level": "Q4_K_M",
             },
             "model_info": {
-                "llama.context_length": 131072,
+                "qwen.context_length": 131072,
             },
         });
         let resp: ShowResponse = serde_json::from_value(body).unwrap();
-        let desc = resp.into_descriptor("llama3.2:7b");
+        let desc = resp.into_descriptor("qwen3.5:9b");
         assert_eq!(desc.provider, ProviderId::new("ollama"));
         assert_eq!(desc.context_window, Some(131072));
-        assert_eq!(desc.family.as_deref(), Some("llama"));
+        assert_eq!(desc.family.as_deref(), Some("qwen"));
         assert_eq!(desc.parameter_count, Some(7_200_000_000));
         assert_eq!(desc.quantization, Some(Quantization::Q4KM));
         assert!(desc.has_capability(Capability::Completion));
@@ -373,18 +373,16 @@ mod tests {
     fn ps_response_matches_by_model_field() {
         let body = serde_json::json!({
             "models": [{
-                "name": "lfm2.5-thinking:1.2b",
-                "model": "lfm2.5-thinking:1.2b",
+                "name": "qwen3.5:9b",
+                "model": "qwen3.5:9b",
                 "size_vram": 944946208_u64,
                 "expires_at": "2026-05-15T10:25:31-04:00",
                 "context_length": 4096,
-                "details": { "family": "lfm2" }
+                "details": { "family": "qwen" }
             }]
         });
         let resp: PsResponse = serde_json::from_value(body).unwrap();
-        let rt = resp
-            .find_runtime("lfm2.5-thinking:1.2b")
-            .expect("model present");
+        let rt = resp.find_runtime("qwen3.5:9b").expect("model present");
         assert_eq!(rt.provider, ProviderId::new("ollama"));
         assert_eq!(rt.effective_context_window, Some(4096));
         assert_eq!(rt.size_vram_bytes, Some(944_946_208));
@@ -405,12 +403,12 @@ mod tests {
     fn ps_response_matches_by_name_when_model_missing() {
         let body = serde_json::json!({
             "models": [{
-                "name": "qwen2.5-coder:3b",
+                "name": "qwen3.5:9b",
                 "context_length": 32_768,
             }]
         });
         let resp: PsResponse = serde_json::from_value(body).unwrap();
-        let rt = resp.find_runtime("qwen2.5-coder:3b").expect("matched");
+        let rt = resp.find_runtime("qwen3.5:9b").expect("matched");
         assert_eq!(rt.effective_context_window, Some(32_768));
     }
 }

@@ -24,7 +24,7 @@
 //! use rig_model_meta::{ModelMetaProbe, OllamaProbe};
 //!
 //! let probe = OllamaProbe::live("http://localhost:11434");
-//! if let Some(desc) = probe.describe("qwen2.5-coder:3b-instruct").await? {
+//! if let Some(desc) = probe.describe("qwen3.5:9b").await? {
 //!     println!("context window: {:?}", desc.context_window);
 //!     println!("capabilities:   {:?}", desc.capabilities);
 //! }

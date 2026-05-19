@@ -126,7 +126,7 @@ impl Quantization {
 pub struct ModelDescriptor {
     /// Provider that serves this model.
     pub provider: ProviderId,
-    /// Provider-specific model identifier (e.g. `gpt-4o`, `llama3.2:3b`).
+    /// Provider-specific model identifier (e.g. `gpt-4o`, `qwen3.5:9b`).
     pub model: String,
     /// Maximum input context window in tokens, if known.
     pub context_window: Option<u64>,
@@ -267,7 +267,7 @@ mod tests {
 
     #[test]
     fn builder_roundtrip() {
-        let d = ModelDescriptor::builder("ollama", "llama3.2:3b")
+        let d = ModelDescriptor::builder("ollama", "qwen3.5:9b")
             .context_window(128_000)
             .capability(Capability::Completion)
             .capability(Capability::Tools)

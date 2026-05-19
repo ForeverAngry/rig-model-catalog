@@ -12,10 +12,10 @@ use rig_model_meta::{
 async fn main() -> anyhow::Result<()> {
     // Stand in for a live OllamaProbe so the example doesn't need a daemon.
     let ollama_stub = StubProbe::new([(
-        "llama3.2:3b",
-        ModelDescriptor::builder("ollama", "llama3.2:3b")
+        "qwen3.5:9b",
+        ModelDescriptor::builder("ollama", "qwen3.5:9b")
             .context_window(131_072)
-            .family("llama")
+            .family("qwen")
             .capability(Capability::Completion)
             .capability(Capability::Tools)
             .build(),
@@ -24,7 +24,7 @@ async fn main() -> anyhow::Result<()> {
     let chained = ChainedProbe::new(ollama_stub, StaticProbe::builtin());
 
     for model in [
-        "llama3.2:3b",
+        "qwen3.5:9b",
         "gpt-4o",
         "claude-3-5-sonnet-latest",
         "unknown",
