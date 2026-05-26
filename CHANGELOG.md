@@ -7,6 +7,23 @@ this crate adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.1.0](https://github.com/ForeverAngry/rig-model-catalog/releases/tag/v0.1.0) - 2026-05-26
+
+### Added
+
+- Update model references from llama3.2 to qwen3.5 across examples and descriptors
+- Emit observe prompt events from MetaHook
+- Initial release v0.1.0
+
+### CI
+
+- Add release automation
+
+### Documentation
+
+- Document thinking capability contract
+- Align ecosystem docs with rig-compose 0.3, rig-core 0.37, and rig-model-meta 0.1 ([#1](https://github.com/ForeverAngry/rig-model-catalog/pull/1))
+
 ### Documentation
 
 - Document the `Capability::Thinking` host contract for Rig/Ollama users:
