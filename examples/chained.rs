@@ -4,7 +4,7 @@
 //! cargo run --example chained --features "static"
 //! ```
 
-use rig_model_meta::{
+use rig_model_catalog::{
     Capability, ChainedProbe, ModelDescriptor, ModelMetaProbe, StaticProbe, StubProbe,
 };
 

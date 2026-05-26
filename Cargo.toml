@@ -1,12 +1,12 @@
 [package]
-name = "rig-model-meta"
+name = "rig-model-catalog"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.89"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 description = "Provider-agnostic model metadata (context window, capabilities, quantization) and probe traits for Rig agents."
-repository = "https://github.com/ForeverAngry/rig-model-meta"
+repository = "https://github.com/ForeverAngry/rig-model-catalog"
 authors = ["ForeverAngry"]
 keywords = ["rig", "llm", "model", "context-window", "telemetry"]
 categories = ["api-bindings", "asynchronous"]

@@ -13,7 +13,7 @@
 //! ```
 //! use std::sync::Arc;
 //!
-//! use rig_model_meta::{
+//! use rig_model_catalog::{
 //!     DynProbe, ModelDescriptor, ModelMetaProbe, ModelMetaProbeDyn, StubProbe,
 //! };
 //!

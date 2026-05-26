@@ -1,11 +1,11 @@
 # AGENTS.md
 
-Guidance for AI coding agents working in `rig-model-meta`. Mirrors
+Guidance for AI coding agents working in `rig-model-catalog`. Mirrors
 [.github/copilot-instructions.md](.github/copilot-instructions.md).
 
 ## Project
 
-`rig-model-meta` is the provider-agnostic model-metadata layer for the
+`rig-model-catalog` is the provider-agnostic model-catalogdata layer for the
 Rig ecosystem. Public primitives:
 
 - `ModelMetaProbe` trait — async `describe(model) -> Result<Option<...>>`
@@ -62,6 +62,6 @@ Integration tests live in [tests/](tests/). Examples must keep building:
 ## Scope
 
 Do not vendor `rig-core`. The crate must not depend on `rig-memvid`,
-`rig-compose`, `rig-resources`, `rig-mcp`, or `rig-evals-rag` — it must
+`rig-compose`, `rig-resources`, `rig-mcp`, or `rig-retrieval-evals` — it must
 remain consumable by **all** of them. Update [README.md](README.md) and
 [CHANGELOG.md](CHANGELOG.md) for user-visible changes.

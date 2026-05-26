@@ -18,7 +18,7 @@
 //! ```no_run
 //! # #[cfg(feature = "rig-hook")]
 //! # fn doc() {
-//! use rig_model_meta::{HookPair, MetaHook};
+//! use rig_model_catalog::{HookPair, MetaHook};
 //!
 //! // Pair an ambient telemetry hook with whatever behavioural hook you
 //! // already had attached.

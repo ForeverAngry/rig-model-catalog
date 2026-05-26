@@ -8,7 +8,7 @@
     clippy::indexing_slicing
 )]
 
-use rig_model_meta::{ModelPrice, PricingTable};
+use rig_model_catalog::{ModelPrice, PricingTable};
 
 #[test]
 fn builtin_table_costs_match_published_rates() {

@@ -17,7 +17,7 @@
 //! ```no_run
 //! # #[cfg(all(feature = "rig-hook", feature = "ollama"))]
 //! # async fn run() -> anyhow::Result<()> {
-//! use rig_model_meta::{MetaHook, OllamaProbe};
+//! use rig_model_catalog::{MetaHook, OllamaProbe};
 //!
 //! let probe = OllamaProbe::live("http://localhost:11434");
 //! let hook = MetaHook::resolve(&probe, "ollama", "qwen3.5:9b").await?;
@@ -171,7 +171,7 @@ where
     ) -> impl Future<Output = HookAction> + WasmCompatSend {
         let window = self.descriptor.as_ref().and_then(|d| d.context_window);
         tracing::info!(
-            target: "rig_model_meta::hook",
+            target: "rig_model_catalog::hook",
             gen_ai_system = %self.provider,
             gen_ai_request_model = %self.model,
             gen_ai_model_context_window = window,
@@ -195,7 +195,7 @@ where
         let window = self.descriptor.as_ref().and_then(|d| d.context_window);
         let pct = self.context_used_pct(usage.input_tokens);
         tracing::info!(
-            target: "rig_model_meta::hook",
+            target: "rig_model_catalog::hook",
             gen_ai_system = %self.provider,
             gen_ai_response_model = %self.model,
             gen_ai_usage_input_tokens = usage.input_tokens,

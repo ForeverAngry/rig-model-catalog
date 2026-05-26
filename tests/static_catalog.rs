@@ -2,7 +2,7 @@
 
 #![allow(clippy::unwrap_used, clippy::panic, clippy::indexing_slicing)]
 
-use rig_model_meta::{Capability, ModelMetaProbe, StaticProbe};
+use rig_model_catalog::{Capability, ModelMetaProbe, StaticProbe};
 
 #[tokio::test]
 async fn openai_catalog_has_gpt_family() {

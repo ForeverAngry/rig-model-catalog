@@ -26,7 +26,7 @@ use crate::{ModelDescriptor, ProbeError};
 /// ## Example
 ///
 /// ```
-/// use rig_model_meta::{ModelDescriptor, ModelMetaProbe, ProbeError, StubProbe};
+/// use rig_model_catalog::{ModelDescriptor, ModelMetaProbe, ProbeError, StubProbe};
 ///
 /// # async fn run() -> Result<(), ProbeError> {
 /// let probe = StubProbe::new([(

@@ -5,7 +5,7 @@
 //! know about.
 //!
 //! ```
-//! use rig_model_meta::{
+//! use rig_model_catalog::{
 //!     ChainedProbe, ModelDescriptor, ModelMetaProbe, StubProbe,
 //! };
 //!
@@ -78,7 +78,7 @@ where
             Ok(None) => self.fallback.describe(model).await,
             Err(err) if self.tolerant => {
                 tracing::warn!(
-                    target: "rig_model_meta::chained",
+                    target: "rig_model_catalog::chained",
                     error = %err,
                     model = model,
                     "primary probe failed; consulting fallback"

@@ -1006,7 +1006,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rig-model-meta"
+name = "rig-model-catalog"
 version = "0.1.0"
 dependencies = [
  "anyhow",

@@ -8,7 +8,7 @@
 //! ```
 //! use std::time::Duration;
 //!
-//! use rig_model_meta::{
+//! use rig_model_catalog::{
 //!     Cache, ModelDescriptor, ModelMetaProbe, StubProbe,
 //! };
 //!

@@ -1,4 +1,4 @@
-# rig-model-meta — Copilot Instructions
+# rig-model-catalog — Copilot Instructions
 
 See [AGENTS.md](../AGENTS.md) for the authoritative copy. Summary:
 
@@ -44,6 +44,6 @@ just check
 ## Scope
 
 Do not depend on `rig-compose`, `rig-memvid`, `rig-resources`, `rig-mcp`,
-`rig-veh`, or `rig-evals-rag`. Keep the optional `rig-core` dependency confined
+or `rig-retrieval-evals`. Keep the optional `rig-core` dependency confined
 to the `rig-hook` feature with default features disabled so this crate remains
 consumable by all of them.

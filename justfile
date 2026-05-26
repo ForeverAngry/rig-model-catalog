@@ -1,4 +1,4 @@
-# rig-model-meta task runner.
+# rig-model-catalog task runner.
 #
 # Install just: https://github.com/casey/just
 #   brew install just

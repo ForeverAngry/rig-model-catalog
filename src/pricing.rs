@@ -25,7 +25,7 @@
 //! # Quick start
 //!
 //! ```
-//! use rig_model_meta::{ModelPrice, PricingTable};
+//! use rig_model_catalog::{ModelPrice, PricingTable};
 //!
 //! let table = PricingTable::builtin();
 //! let price = table
@@ -238,7 +238,7 @@ impl PricingTable {
             Err(err) => {
                 tracing::error!(
                     error = %err,
-                    "rig-model-meta: bundled pricing.json failed to parse; \
+                    "rig-model-catalog: bundled pricing.json failed to parse; \
                      returning empty table",
                 );
                 Self::new()

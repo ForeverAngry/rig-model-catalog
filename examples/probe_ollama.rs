@@ -12,7 +12,7 @@
 
 use std::env;
 
-use rig_model_meta::{ModelMetaProbe, OllamaProbe};
+use rig_model_catalog::{ModelMetaProbe, OllamaProbe};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {

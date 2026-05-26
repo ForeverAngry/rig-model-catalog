@@ -1,4 +1,4 @@
-//! # rig-model-meta
+//! # rig-model-catalog
 //!
 //! Provider-agnostic model metadata for the [Rig](https://crates.io/crates/rig-core)
 //! ecosystem. This crate exposes a single trait — [`ModelMetaProbe`] — and a
@@ -21,7 +21,7 @@
 //! ```no_run
 //! # #[cfg(feature = "ollama")]
 //! # async fn run() -> anyhow::Result<()> {
-//! use rig_model_meta::{ModelMetaProbe, OllamaProbe};
+//! use rig_model_catalog::{ModelMetaProbe, OllamaProbe};
 //!
 //! let probe = OllamaProbe::live("http://localhost:11434");
 //! if let Some(desc) = probe.describe("qwen3.5:9b").await? {
@@ -41,7 +41,7 @@
 //! ```no_run
 //! # #[cfg(all(feature = "ollama", feature = "static"))]
 //! # async fn run() -> anyhow::Result<()> {
-//! use rig_model_meta::{
+//! use rig_model_catalog::{
 //!     ChainedProbe, ModelMetaProbe, OllamaProbe, StaticProbe,
 //! };
 //!

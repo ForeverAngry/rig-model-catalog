@@ -3,7 +3,7 @@
 //! Construct from any iterator of `(model_id, descriptor)` pairs:
 //!
 //! ```
-//! use rig_model_meta::{ModelDescriptor, ModelMetaProbe, StubProbe};
+//! use rig_model_catalog::{ModelDescriptor, ModelMetaProbe, StubProbe};
 //!
 //! # async fn run() -> anyhow::Result<()> {
 //! let probe = StubProbe::new([(

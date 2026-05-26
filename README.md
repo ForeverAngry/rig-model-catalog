@@ -1,9 +1,9 @@
-# rig-model-meta
+# rig-model-catalog
 
 Provider-agnostic model metadata for the [Rig](https://crates.io/crates/rig-core)
 ecosystem.
 
-`rig-model-meta` answers one question consistently across providers:
+`rig-model-catalog` answers one question consistently across providers:
 
 > _Given a model id, what is its context window, what capabilities does it
 > advertise, and what do I need to know to size prompts and budget tokens?_
@@ -24,11 +24,11 @@ variants) are not breaking.
 
 ```toml
 [dependencies]
-rig-model-meta = { version = "0.1", features = ["ollama", "static"] }
+rig-model-catalog = { version = "0.1", features = ["ollama", "static"] }
 ```
 
 ```rust,no_run
-use rig_model_meta::{ChainedProbe, ModelMetaProbe, OllamaProbe, StaticProbe};
+use rig_model_catalog::{ChainedProbe, ModelMetaProbe, OllamaProbe, StaticProbe};
 
 # async fn run() -> anyhow::Result<()> {
 let probe = ChainedProbe::new(
@@ -51,7 +51,7 @@ separation with `think: true` and still assert that user-visible output is free
 of raw `<think>` / `</think>` tags.
 
 ```rust,no_run
-use rig_model_meta::{Capability, ModelMetaProbe, OllamaProbe};
+use rig_model_catalog::{Capability, ModelMetaProbe, OllamaProbe};
 
 let base_url = "http://localhost:11434";
 let model_name = "qwen3.5:9b";
@@ -114,7 +114,7 @@ Still planned:
 
 - Knowledge-cutoff + deprecation fields (additive, data files).
 - Bedrock and llama.cpp probes.
-- CLI: `rig-model-meta show <provider>:<model>`.
+- CLI: `rig-model-catalog show <provider>:<model>`.
 
 ## License
 
