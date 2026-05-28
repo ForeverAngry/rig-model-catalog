@@ -16,9 +16,9 @@ features.
 
 ## Status
 
-`v0.1.0` — initial release. API is `#[non_exhaustive]` where it counts;
-additive changes (new descriptor fields, new probes, new capability
-variants) are not breaking.
+`v0.1.1` — follow-up to the initial `v0.1.0` release. API is
+`#[non_exhaustive]` where it counts; additive changes (new descriptor fields,
+new probes, new capability variants) are not breaking.
 
 ## Quick start
 
@@ -103,12 +103,12 @@ before users see reasoning tags.
 
 ## Roadmap
 
-Released in `v0.1.0`. Unreleased on `main` and exercised in the CI matrix:
-`MetaHook` + `HookPair` (`rig-hook` feature), `MetaHook` `rig_tap`
-emission (`observe` feature), `PricingTable` + `ModelPrice` (`pricing` feature),
-`RuntimeDescriptor` / `OllamaProbe::runtime`,
-`ModelMetaProbeDyn` + `DynProbe`, and a TTL `Cache<P>` memoiser. See
-[`CHANGELOG.md`](CHANGELOG.md) for the full list.
+Released through `v0.1.1` and exercised in the CI matrix: `MetaHook` +
+`HookPair` (`rig-hook` feature), `MetaHook` `rig_tap` emission (`observe`
+feature), `PricingTable` + `ModelPrice` (`pricing` feature),
+`RuntimeDescriptor` / `OllamaProbe::runtime`, `ModelMetaProbeDyn` + `DynProbe`,
+and a TTL `Cache<P>` memoiser. See [`CHANGELOG.md`](CHANGELOG.md) for the full
+list.
 
 `PricingTable::builtin()` exposes the bundled pricing snapshot date and
 provenance through `snapshot_date()` and `snapshot_provenance()` so downstream
