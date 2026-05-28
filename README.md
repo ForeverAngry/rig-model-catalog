@@ -85,7 +85,7 @@ before users see reasoning tags.
 | `static`  | —              | `StaticProbe::builtin()` with bundled OpenAI + Anthropic tables |
 | `rig-hook`| `rig-core`     | `MetaHook` + `HookPair` (PromptHook telemetry composition) |
 | `observe` | `rig-hook`     | Re-emits `MetaHook` prompt lifecycle events on the `rig_tap` target |
-| `pricing` | —              | `PricingTable` + `ModelPrice` with bundled OpenAI + Anthropic USD/M rates |
+| `pricing` | —              | `PricingTable` + `ModelPrice` with bundled OpenAI + Anthropic USD/M rates and snapshot metadata |
 
 ## Design rules
 
@@ -109,6 +109,11 @@ emission (`observe` feature), `PricingTable` + `ModelPrice` (`pricing` feature),
 `RuntimeDescriptor` / `OllamaProbe::runtime`,
 `ModelMetaProbeDyn` + `DynProbe`, and a TTL `Cache<P>` memoiser. See
 [`CHANGELOG.md`](CHANGELOG.md) for the full list.
+
+`PricingTable::builtin()` exposes the bundled pricing snapshot date and
+provenance through `snapshot_date()` and `snapshot_provenance()` so downstream
+cost reports can warn on stale static rates while still overriding prices with
+host-owned JSON or programmatic entries.
 
 Still planned:
 

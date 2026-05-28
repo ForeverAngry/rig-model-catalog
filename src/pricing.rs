@@ -45,7 +45,9 @@
 //! out-of-band; treat the builtin as a starting point and override with
 //! [`PricingTable::from_json`] or programmatic [`PricingTable::with`]
 //! calls when accuracy matters (cost dashboards, billing-tier gates).
-//! The CHANGELOG records the date each snapshot was taken.
+//! [`PricingTable::snapshot_date`] and
+//! [`PricingTable::snapshot_provenance`] expose the bundled snapshot
+//! metadata when the JSON source provides it.
 
 use std::collections::BTreeMap;
 
@@ -155,6 +157,22 @@ struct PricingEntry {
     cache_write_per_million: Option<f64>,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+struct PricingSnapshot {
+    #[serde(default)]
+    snapshot_date: Option<String>,
+    #[serde(default)]
+    snapshot_provenance: Option<String>,
+    entries: Vec<PricingEntry>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(untagged)]
+enum PricingJson {
+    Snapshot(PricingSnapshot),
+    Entries(Vec<PricingEntry>),
+}
+
 /// Lookup table mapping `(provider, model)` pairs to [`ModelPrice`].
 ///
 /// The builtin catalog is curated and point-in-time; see the module-
@@ -162,6 +180,8 @@ struct PricingEntry {
 #[derive(Debug, Clone, Default)]
 pub struct PricingTable {
     entries: BTreeMap<(ProviderId, String), ModelPrice>,
+    snapshot_date: Option<String>,
+    snapshot_provenance: Option<String>,
 }
 
 impl PricingTable {
@@ -179,6 +199,30 @@ impl PricingTable {
     ) -> Self {
         self.entries.insert((provider.into(), model.into()), price);
         self
+    }
+
+    /// Builder: attach machine-readable snapshot metadata.
+    #[must_use]
+    pub fn with_snapshot_metadata(
+        mut self,
+        snapshot_date: impl Into<String>,
+        snapshot_provenance: impl Into<String>,
+    ) -> Self {
+        self.snapshot_date = Some(snapshot_date.into());
+        self.snapshot_provenance = Some(snapshot_provenance.into());
+        self
+    }
+
+    /// Snapshot date for the pricing source, when provided.
+    #[must_use]
+    pub fn snapshot_date(&self) -> Option<&str> {
+        self.snapshot_date.as_deref()
+    }
+
+    /// Human-readable provenance for the pricing source, when provided.
+    #[must_use]
+    pub fn snapshot_provenance(&self) -> Option<&str> {
+        self.snapshot_provenance.as_deref()
     }
 
     /// Look up a price quote. Returns `None` for unknown models.
@@ -203,11 +247,31 @@ impl PricingTable {
             .map(|((provider, model), price)| (provider, model.as_str(), price))
     }
 
-    /// Parse a JSON array of `{provider, model, input_per_million, …}`
-    /// rows into a table.
+    /// Parse pricing JSON into a table.
+    ///
+    /// Accepts the original JSON array of `{provider, model,
+    /// input_per_million, ...}` rows and the newer snapshot object shape:
+    /// `{snapshot_date, snapshot_provenance, entries}`.
     pub fn from_json(json: &str) -> Result<Self, serde_json::Error> {
-        let entries: Vec<PricingEntry> = serde_json::from_str(json)?;
-        Ok(Self::from_entries(entries))
+        let parsed: PricingJson = serde_json::from_str(json)?;
+        Ok(match parsed {
+            PricingJson::Snapshot(snapshot) => Self::from_entries(snapshot.entries)
+                .with_optional_snapshot_metadata(
+                    snapshot.snapshot_date,
+                    snapshot.snapshot_provenance,
+                ),
+            PricingJson::Entries(entries) => Self::from_entries(entries),
+        })
+    }
+
+    fn with_optional_snapshot_metadata(
+        mut self,
+        snapshot_date: Option<String>,
+        snapshot_provenance: Option<String>,
+    ) -> Self {
+        self.snapshot_date = snapshot_date;
+        self.snapshot_provenance = snapshot_provenance;
+        self
     }
 
     fn from_entries(entries: Vec<PricingEntry>) -> Self {
@@ -321,11 +385,44 @@ mod tests {
         let table = PricingTable::from_json(json).expect("parses");
         let price = table.lookup("openai", "gpt-4o").expect("present");
         assert_eq!(price.cached_input_per_million, Some(1.25));
+        assert_eq!(table.snapshot_date(), None);
+        assert_eq!(table.snapshot_provenance(), None);
+    }
+
+    #[test]
+    fn pricing_table_parses_snapshot_metadata() {
+        let json = r#"{
+            "snapshot_date": "2026-05-28",
+            "snapshot_provenance": "manual public pricing snapshot",
+            "entries": [
+                {
+                    "provider": "openai",
+                    "model": "gpt-4o-mini",
+                    "input_per_million": 0.15,
+                    "output_per_million": 0.60
+                }
+            ]
+        }"#;
+
+        let table = PricingTable::from_json(json).expect("parses");
+
+        assert_eq!(table.snapshot_date(), Some("2026-05-28"));
+        assert_eq!(
+            table.snapshot_provenance(),
+            Some("manual public pricing snapshot")
+        );
+        assert!(table.lookup("openai", "gpt-4o-mini").is_some());
     }
 
     #[test]
     fn builtin_catalog_seeds_known_models() {
         let table = PricingTable::builtin();
+        assert_eq!(table.snapshot_date(), Some("2026-05-28"));
+        assert!(
+            table
+                .snapshot_provenance()
+                .is_some_and(|value| value.contains("Manual public pricing"))
+        );
         assert!(
             table.lookup("openai", "gpt-4o-mini").is_some(),
             "seed must include gpt-4o-mini",

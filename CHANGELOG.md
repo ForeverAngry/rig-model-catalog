@@ -37,9 +37,12 @@ this crate adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   Anthropic (`claude-3-5-sonnet-20241022`, `claude-3-5-haiku-20241022`,
   `claude-3-opus-20240229`) at their published per-million rates;
   override programmatically via `PricingTable::with(...)` or load a
-  fresher snapshot via `PricingTable::from_json(...)`. Snapshot taken
-  2025-Q1 against the providers' public pricing pages — treat as a
-  starting point, not a billing source of truth.
+  fresher snapshot via `PricingTable::from_json(...)`. The bundled JSON now
+  carries machine-readable `snapshot_date` and `snapshot_provenance` fields;
+  expose them with `PricingTable::snapshot_date()` and
+  `PricingTable::snapshot_provenance()` so downstream cost reports can flag
+  stale rates. Snapshot taken 2026-05-28 against the providers' public pricing
+  pages — treat as a starting point, not a billing source of truth.
 - `MetaHook` (feature `rig-hook`) — implements
   `rig_core::agent::PromptHook` and stamps `gen_ai_*` telemetry on every
   completion call: provider, model, context window, per-turn

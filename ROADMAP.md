@@ -24,37 +24,35 @@ what is deliberately out of scope. For day-to-day conventions see
   `ObservabilityEvent` wire shape without depending on `rig-tap`.
 - `PricingTable` + `ModelPrice` (feature `pricing`) with
   `cost_for(input, output, cached_input, cache_write)` and
-  `cost_for_usage(&rig_core::completion::Usage)` under `rig-hook`.
+  `cost_for_usage(&rig_core::completion::Usage)` under `rig-hook`, plus
+  machine-readable `snapshot_date` / `snapshot_provenance` metadata exposed
+  via `PricingTable::snapshot_date()` and `snapshot_provenance()`.
 
 ## Next Work
 
-1. **Pricing snapshot freshness** — wire a documented refresh cadence and
-   provenance comment in `data/pricing.json`; expose
-   `PricingTable::snapshot_date()` so downstream cost reports can flag
-   stale rates instead of silently overcharging or undercharging.
-2. **Provider coverage expansion** — add `StaticProbe` catalogs for Gemini
+1. **Provider coverage expansion** — add `StaticProbe` catalogs for Gemini
    and Mistral, keyed by the same `(provider, model)` pricing table so
    `cost_for_usage` covers them on the same dispatch path. Treat new
    providers as additive `data/*.json` plus an enum variant; no new
    feature flags.
-3. **Capability surface** — fold structured-output and audio-in/out
+2. **Capability surface** — fold structured-output and audio-in/out
    capability variants into `Capability` once the host providers
    advertise them stably. Additive only — `Capability` stays
    `#[non_exhaustive]`.
-4. **Probe cache adapter** — provide a tiny in-process cache wrapper
+3. **Probe cache adapter** — provide a tiny in-process cache wrapper
    `CachedProbe<P>` so callers can avoid hammering `/api/tags`,
    `/api/show`, and `/api/ps` on every dispatch. Keep zero default deps;
    guard cache keys behind the probe's existing input.
-5. **Runtime drift telemetry** — when both `describe()` and `runtime()`
+4. **Runtime drift telemetry** — when both `describe()` and `runtime()`
    are queried, emit a structured `tracing` warning (no new event kind)
    if `effective_context_window < context_window`, so hosts can surface
    the `num_ctx` footgun in dashboards without bespoke comparison code.
 
 ## Prototype Grade
 
-- The bundled OpenAI / Anthropic catalogs reflect a manual snapshot; date
-  provenance is documented in `CHANGELOG.md` but not yet machine-readable
-  in `data/*.json`. Treat anything older than 90 days as stale.
+- The bundled OpenAI / Anthropic catalogs reflect a manual snapshot with
+  machine-readable date/provenance in `data/pricing.json`. Treat anything
+  older than 90 days as stale.
 - `OllamaProbe` assumes the Ollama HTTP daemon is reachable at the
   configured base URL. Hosts behind reverse proxies should chain a
   `StaticProbe` ahead of it.
