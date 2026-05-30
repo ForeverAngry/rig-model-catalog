@@ -7,6 +7,12 @@ this crate adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.1.3](https://github.com/ForeverAngry/rig-model-catalog/compare/v0.1.2...v0.1.3) - 2026-05-30
+
+### Documentation
+
+- Align README Status/Roadmap with shipped 0.1.2 ([#4](https://github.com/ForeverAngry/rig-model-catalog/pull/4))
+
 ## [0.1.2](https://github.com/ForeverAngry/rig-model-catalog/compare/v0.1.1...v0.1.2) - 2026-05-28
 
 ### Documentation
