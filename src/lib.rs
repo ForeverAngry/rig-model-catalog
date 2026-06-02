@@ -103,7 +103,7 @@ pub use crate::hook::MetaHook;
 pub use crate::hook_pair::HookPair;
 
 #[cfg(feature = "pricing")]
-pub use crate::pricing::{ModelPrice, PricingTable};
+pub use crate::pricing::{ModelPrice, PricingTable, ResolvedPrice};
 
 /// Convenience re-exports for typical consumers.
 pub mod prelude {
@@ -125,5 +125,5 @@ pub mod prelude {
     pub use crate::HookPair;
 
     #[cfg(feature = "pricing")]
-    pub use crate::{ModelPrice, PricingTable};
+    pub use crate::{ModelPrice, PricingTable, ResolvedPrice};
 }

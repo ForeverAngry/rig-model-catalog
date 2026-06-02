@@ -129,6 +129,31 @@ impl ModelPrice {
         (input + output + cached + cache_write) / PER_MILLION
     }
 
+    /// Compute the provider-side cache USD delta for a turn.
+    ///
+    /// This is the difference between billing the cache buckets at their
+    /// dedicated rates and billing them at the uncached `input_per_million`
+    /// rate. Positive values mean provider cache **reads** reduced the bill;
+    /// negative values mean cache **writes** cost more than ordinary input
+    /// tokens. This is a provider discount/surcharge, *not* a savings figure
+    /// produced by any decorator — callers should track it separately from
+    /// optimization savings to avoid double-counting.
+    ///
+    /// When a cache rate is absent the corresponding bucket bills at
+    /// `input_per_million`, so its contribution to the delta is zero.
+    pub fn cache_delta(&self, cached_input_tokens: u64, cache_write_tokens: u64) -> f64 {
+        const PER_MILLION: f64 = 1_000_000.0;
+        let cached_rate = self
+            .cached_input_per_million
+            .unwrap_or(self.input_per_million);
+        let cache_write_rate = self
+            .cache_write_per_million
+            .unwrap_or(self.input_per_million);
+        let read_delta = cached_input_tokens as f64 * (self.input_per_million - cached_rate);
+        let write_delta = cache_write_tokens as f64 * (self.input_per_million - cache_write_rate);
+        (read_delta + write_delta) / PER_MILLION
+    }
+
     /// Compute the USD cost of a turn from a `rig_core::completion::Usage`.
     ///
     /// Available under the `rig-hook` feature so the bridge lives next to
@@ -142,6 +167,21 @@ impl ModelPrice {
             usage.cache_creation_input_tokens,
         )
     }
+}
+
+/// A price quote resolved from a free-form model-id string.
+///
+/// Returned by [`PricingTable::resolve`], which accepts explicit
+/// `provider:model` / `provider/model` ids as well as provider-local
+/// bare model ids (resolved only when exactly one provider row matches).
+#[derive(Debug, Clone, PartialEq)]
+pub struct ResolvedPrice {
+    /// Provider id used for the lookup.
+    pub provider: ProviderId,
+    /// Provider-specific model id used for the lookup.
+    pub model: String,
+    /// Price row backing the quote.
+    pub price: ModelPrice,
 }
 
 /// Owned representation of one JSON row in `data/pricing.json`.
@@ -228,6 +268,57 @@ impl PricingTable {
     /// Look up a price quote. Returns `None` for unknown models.
     pub fn lookup(&self, provider: impl Into<ProviderId>, model: &str) -> Option<&ModelPrice> {
         self.entries.get(&(provider.into(), model.to_string()))
+    }
+
+    /// Resolve a price from a free-form model-id string.
+    ///
+    /// The id may be explicit (`openai:gpt-4o-mini` or
+    /// `openai/gpt-4o-mini`) or provider-local (`gpt-4o-mini`).
+    /// Provider-local ids resolve only when the table contains exactly one
+    /// provider row for that model; an ambiguous bare id returns `None`.
+    /// Empty / whitespace-only ids return `None`.
+    #[must_use]
+    pub fn resolve(&self, model_id: &str) -> Option<ResolvedPrice> {
+        let trimmed = model_id.trim();
+        if trimmed.is_empty() {
+            return None;
+        }
+
+        if let Some(resolved) = self.resolve_explicit(trimmed, ':') {
+            return Some(resolved);
+        }
+        if let Some(resolved) = self.resolve_explicit(trimmed, '/') {
+            return Some(resolved);
+        }
+
+        let mut found: Option<ResolvedPrice> = None;
+        for (provider, model, price) in self.iter() {
+            if model != trimmed {
+                continue;
+            }
+            if found.is_some() {
+                return None;
+            }
+            found = Some(ResolvedPrice {
+                provider: provider.clone(),
+                model: model.to_string(),
+                price: price.clone(),
+            });
+        }
+        found
+    }
+
+    fn resolve_explicit(&self, model_id: &str, delimiter: char) -> Option<ResolvedPrice> {
+        let (provider, model) = model_id.split_once(delimiter)?;
+        if provider.is_empty() || model.is_empty() {
+            return None;
+        }
+        let price = self.lookup(provider, model)?.clone();
+        Some(ResolvedPrice {
+            provider: ProviderId::new(provider),
+            model: model.to_string(),
+            price,
+        })
     }
 
     /// Number of `(provider, model)` rows in the table.
@@ -359,6 +450,55 @@ mod tests {
         // No cache_write_per_million either.
         let cost = price.cost_for(0, 0, 0, 1_000_000);
         assert!((cost - 2.50).abs() < 1e-9);
+    }
+
+    #[test]
+    fn cache_delta_rewards_cache_reads_and_charges_writes() {
+        let price = ModelPrice::new(2.50, 10.00)
+            .with_cached_input(1.25)
+            .with_cache_write(3.75);
+        // Reads: 1M * (2.50 - 1.25) = $1.25 saved.
+        let read = price.cache_delta(1_000_000, 0);
+        assert!((read - 1.25).abs() < 1e-9);
+        // Writes: 1M * (2.50 - 3.75) = -$1.25 (write surcharge).
+        let write = price.cache_delta(0, 1_000_000);
+        assert!((write + 1.25).abs() < 1e-9);
+    }
+
+    #[test]
+    fn cache_delta_is_zero_when_cache_rates_absent() {
+        let price = ModelPrice::new(2.50, 10.00);
+        assert!(price.cache_delta(1_000_000, 1_000_000).abs() < 1e-12);
+    }
+
+    #[test]
+    fn resolve_explicit_provider_prefix_with_either_delimiter() {
+        let table = PricingTable::new().with("openai", "gpt-4o-mini", ModelPrice::new(0.15, 0.60));
+        let colon = table.resolve("openai:gpt-4o-mini").expect("resolves");
+        assert_eq!(colon.provider.as_str(), "openai");
+        assert_eq!(colon.model, "gpt-4o-mini");
+        let slash = table.resolve("openai/gpt-4o-mini").expect("resolves");
+        assert_eq!(slash, colon);
+    }
+
+    #[test]
+    fn resolve_bare_model_only_when_unambiguous() {
+        let unique = PricingTable::new().with("openai", "solo", ModelPrice::new(1.0, 2.0));
+        assert!(unique.resolve("solo").is_some());
+
+        let ambiguous = PricingTable::new()
+            .with("openai", "dup", ModelPrice::new(1.0, 2.0))
+            .with("anthropic", "dup", ModelPrice::new(3.0, 4.0));
+        assert!(ambiguous.resolve("dup").is_none());
+    }
+
+    #[test]
+    fn resolve_rejects_empty_and_unknown_ids() {
+        let table = PricingTable::new().with("openai", "gpt-4o", ModelPrice::new(2.5, 10.0));
+        assert!(table.resolve("").is_none());
+        assert!(table.resolve("   ").is_none());
+        assert!(table.resolve("unknown:nope").is_none());
+        assert!(table.resolve("openai:").is_none());
     }
 
     #[test]
