@@ -85,7 +85,7 @@ before users see reasoning tags.
 | `static`  | —              | `StaticProbe::builtin()` with bundled OpenAI + Anthropic tables |
 | `rig-hook`| `rig-core`     | `MetaHook` + `HookPair` (PromptHook telemetry composition) |
 | `observe` | `rig-hook`     | Re-emits `MetaHook` prompt lifecycle events on the `rig_tap` target |
-| `pricing` | —              | `PricingTable` + `ModelPrice` with bundled OpenAI + Anthropic USD/M rates and snapshot metadata |
+| `pricing` | —              | `PricingTable` + `ModelPrice` + `ResolvedPrice` with bundled OpenAI + Anthropic USD/M rates, model-id resolution, cache-delta math, and snapshot metadata |
 
 ## Design rules
 

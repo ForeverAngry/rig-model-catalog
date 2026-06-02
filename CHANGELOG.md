@@ -7,6 +7,19 @@ this crate adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+### Added
+
+- `PricingTable::resolve(model_id)` — resolve a free-form model id
+  (`provider:model`, `provider/model`, or an unambiguous bare `model`) to a
+  `ResolvedPrice`. Centralizes model-id resolution that consumers previously
+  re-implemented.
+- `ResolvedPrice` — public `{ provider, model, price }` quote returned by
+  `PricingTable::resolve`, re-exported from the crate root and `prelude`
+  under the `pricing` feature.
+- `ModelPrice::cache_delta(cached_input_tokens, cache_write_tokens)` — the
+  provider-side cache USD delta (cache reads vs. uncached input rate), so the
+  arithmetic lives next to the rate data rather than in downstream crates.
+
 ## [0.1.2](https://github.com/ForeverAngry/rig-model-catalog/compare/v0.1.1...v0.1.2) - 2026-05-28
 
 ### Documentation
